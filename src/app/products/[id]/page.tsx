@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { formatDate, formatPrice } from "@/lib/format";
 import StatusBadge from "@/components/StatusBadge";
 import DeleteProductButton from "@/components/DeleteProductButton";
+import BuyButton from "@/components/BuyButton";
 import CommentSection from "@/components/CommentSection";
 import type { Product } from "@/types/product";
 import type { Comment } from "@/types/comment";
@@ -90,6 +91,21 @@ export default async function ProductDetailPage({
                 수정
               </Link>
               <DeleteProductButton productId={product.id} />
+            </div>
+          )}
+
+          {!isOwner && product.status === "판매중" && (
+            <div className="mt-4">
+              {user ? (
+                <BuyButton productId={product.id} currentUserId={user.id} />
+              ) : (
+                <p className="text-sm text-neutral-400">
+                  <Link href="/login" className="font-medium text-orange-600 hover:underline">
+                    로그인
+                  </Link>{" "}
+                  후 구매할 수 있어요.
+                </p>
+              )}
             </div>
           )}
         </div>

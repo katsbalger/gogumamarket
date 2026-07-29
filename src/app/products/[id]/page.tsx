@@ -40,7 +40,7 @@ export default async function ProductDetailPage({
 
   const { data: comments } = await supabase
     .from("comments")
-    .select("id, content, created_at, author_id, profiles(username)")
+    .select("id, content, image_url, created_at, author_id, profiles(username)")
     .eq("product_id", product.id)
     .order("created_at", { ascending: true });
 

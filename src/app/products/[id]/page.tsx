@@ -4,7 +4,9 @@ import { createClient } from "@/lib/supabase/server";
 import { formatDate, formatPrice } from "@/lib/format";
 import StatusBadge from "@/components/StatusBadge";
 import DeleteProductButton from "@/components/DeleteProductButton";
+import CommentSection from "@/components/CommentSection";
 import type { Product } from "@/types/product";
+import type { Comment } from "@/types/comment";
 
 export default async function ProductDetailPage({
   params,
@@ -35,6 +37,12 @@ export default async function ProductDetailPage({
   } = await supabase.auth.getUser();
 
   const isOwner = user?.id === product.seller_id;
+
+  const { data: comments } = await supabase
+    .from("comments")
+    .select("id, content, created_at, author_id, profiles(username)")
+    .eq("product_id", product.id)
+    .order("created_at", { ascending: true });
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-6">
@@ -86,6 +94,12 @@ export default async function ProductDetailPage({
           )}
         </div>
       </div>
+
+      <CommentSection
+        productId={product.id}
+        initialComments={(comments as Comment[] | null) ?? []}
+        currentUserId={user?.id ?? null}
+      />
     </div>
   );
 }
